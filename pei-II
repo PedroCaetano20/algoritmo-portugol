@@ -1,0 +1,47 @@
+algoritmo "Agendamento de Serviço"
+// Declaração de variáveis
+var
+    tipoServico: caractere
+    temServicoMedioAgendado, temServicoPesadoAgendado: logico
+    disponibilidade: logico
+
+inicio
+    // Início do processo de agendamento
+    escreva("Lista de Serviços: Leve, Médio, Pesado")
+    escreva("Escolha o Serviço: ")
+    leia(tipoServico)
+    
+    // Verificar restrição baseada no tipo de serviço
+    escolha tipoServico
+        caso "Leve"
+            escreva("Agendar Serviço Leve")
+            escreva("Agendamento Concluído")
+        
+        caso "Médio"
+            // Verificar se há serviço pesado agendado
+            escreva("Verificar serviço médio agendado")
+            se (temServicoMedioAgendado = falso) entao
+                escreva("1 Serviço Médio permitido")
+                escreva("Agendar Serviço Médio")
+                escreva("Agendamento Concluído")
+            senao
+                escreva("Data Indisponível")
+            
+        caso "Pesado"
+            // Verificar se há serviço médio ou pesado agendado
+            escreva("Verificar serviço pesado agendado")
+            se (temServicoPesadoAgendado = falso) entao
+                se (temServicoMedioAgendado = falso) entao
+                    escreva("Agendar Serviço Pesado")
+                    escreva("Agendamento Concluído")
+                senao
+                    escreva("Data Indisponível")
+            senao
+                escreva("Data Indisponível")
+        
+        caso contrario
+            escreva("Serviço não reconhecido")
+    
+    // Fim do processo
+    escreva("Fim do Agendamento")
+fimalgoritmo
