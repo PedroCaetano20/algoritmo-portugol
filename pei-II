@@ -2,10 +2,16 @@ algoritmo "Agendamento de Serviço"
 // Declaração de variáveis
 var
     tipoServico: caractere
+    servicosMediosAgendados, servicosPesadosAgendados: inteiro
     temServicoMedioAgendado, temServicoPesadoAgendado: logico
-    disponibilidade: logico
 
 inicio
+    // Inicialização das variáveis
+    servicosMediosAgendados := 0
+    servicosPesadosAgendados := 0
+    temServicoMedioAgendado := falso
+    temServicoPesadoAgendado := falso
+
     // Início do processo de agendamento
     escreva("Lista de Serviços: Leve, Médio, Pesado")
     escreva("Escolha o Serviço: ")
@@ -18,22 +24,23 @@ inicio
             escreva("Agendamento Concluído")
         
         caso "Médio"
-            // Verificar se há serviço pesado agendado
-            escreva("Verificar serviço médio agendado")
-            se (temServicoMedioAgendado = falso) entao
-                escreva("1 Serviço Médio permitido")
+            // Verificar se já existem dois serviços médios agendados
+            escreva("Verificar serviços médios agendados")
+            se (servicosMediosAgendados < 2) entao
+                servicosMediosAgendados := servicosMediosAgendados + 1
                 escreva("Agendar Serviço Médio")
                 escreva("Agendamento Concluído")
             senao
-                escreva("Data Indisponível")
+                escreva("Data Indisponível para Serviço Médio")
             
         caso "Pesado"
             // Verificar se há serviço médio ou pesado agendado
             escreva("Verificar serviço pesado agendado")
             se (temServicoPesadoAgendado = falso) entao
-                se (temServicoMedioAgendado = falso) entao
+                se (servicosMediosAgendados = 0) entao
                     escreva("Agendar Serviço Pesado")
                     escreva("Agendamento Concluído")
+                    temServicoPesadoAgendado := verdadeiro
                 senao
                     escreva("Data Indisponível")
             senao
@@ -45,3 +52,4 @@ inicio
     // Fim do processo
     escreva("Fim do Agendamento")
 fimalgoritmo
+
