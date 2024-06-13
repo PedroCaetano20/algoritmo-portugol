@@ -1,55 +1,145 @@
-algoritmo "Agendamento de Serviço"
-// Declaração de variáveis
-var
-    tipoServico: caractere
-    servicosMediosAgendados, servicosPesadosAgendados: inteiro
-    temServicoMedioAgendado, temServicoPesadoAgendado: logico
+programa
+{
+    // Lista de serviços disponíveis
+    cadeia servicos[3] = {"Leve", "Medio", "Pesado"}
 
-inicio
-    // Inicialização das variáveis
-    servicosMediosAgendados := 0
-    servicosPesadosAgendados := 0
-    temServicoMedioAgendado := falso
-    temServicoPesadoAgendado := falso
+    // Lista com horários disponíveis para agendamento
+    cadeia agendaLeve[3] = {"08:00", "09:00", "10:00"}
+    cadeia agendaMedio[3] = {"10:00", "11:00", "12:00"}
+    cadeia agendaPesado[3] = {"13:00", "14:00", "15:00"}
 
-    // Início do processo de agendamento
-    escreva("Lista de Serviços: Leve, Médio, Pesado")
-    escreva("Escolha o Serviço: ")
-    leia(tipoServico)
-    
-    // Verificar restrição baseada no tipo de serviço
-    escolha tipoServico
-        caso "Leve"
-            escreva("Agendar Serviço Leve")
-            escreva("Agendamento Concluído")
-        
-        caso "Médio"
-            // Verificar se já existem dois serviços médios agendados
-            escreva("Verificar serviços médios agendados")
-            se (servicosMediosAgendados < 2) entao
-                servicosMediosAgendados := servicosMediosAgendados + 1
-                escreva("Agendar Serviço Médio")
-                escreva("Agendamento Concluído")
+    // Lista de serviços já agendados
+    cadeia servicosAgendadosLeve[0]
+    cadeia servicosAgendadosMedio[0]
+    cadeia servicosAgendadosPesado[0]
+
+    funcao inicio()
+    {
+        // Exemplo de uso:
+        escolherServico("Leve")
+        escolherServico("Medio")
+        escolherServico("Pesado")
+    }
+
+    // Escolhe um serviço
+    funcao escolherServico(cadeia servico)
+    {
+        se (verificarDisponibilidade(servico)) entao
+        {
+            classificarServico(servico)
+        }
+        senao
+        {
+            escreva("Serviço não disponível.\n")
+        }
+    }
+
+    // Verifica disponibilidade dos serviços
+    funcao verificarDisponibilidade(cadeia servico) -> logico
+    {
+        para (inteiro i = 0; i < 3; i++)
+        {
+            se (servicos[i] == servico) entao
+            {
+                retorne verdadeiro
+            }
+        }
+        retorne falso
+    }
+
+    // Classifica o serviço (leve, médio, pesado)
+    funcao classificarServico(cadeia servico)
+    {
+        se (servico == "Leve") entao
+        {
+            agendarServicoLeve(servico)
+        }
+        senao se (servico == "Medio") entao
+        {
+            agendarServicoMedio(servico)
+        }
+        senao se (servico == "Pesado") entao
+        {
+            agendarServicoPesado(servico)
+        }
+    }
+
+    // Agenda serviço leve
+    funcao agendarServicoLeve(cadeia servico)
+    {
+        cadeia horarioDisponivel = verificarHorarioDisponivel(agendaLeve)
+
+        se (horarioDisponivel != "")
+        {
+            adicione(servicosAgendadosLeve, servico)
+            escreva("Agendamento concluído para ", servico, " às ", horarioDisponivel, ".\n")
+        }
+        senao
+        {
+            escreva("Não há horários disponíveis para serviço leve.\n")
+        }
+    }
+
+    // Agenda serviço médio
+    funcao agendarServicoMedio(cadeia servico)
+    {
+        se (tamanho(servicosAgendadosMedio) >= 2 ou tamanho(servicosAgendadosPesado) >= 1) entao
+        {
+            escreva("Data bloqueada. Verificar novo dia.\n")
+            retorne
+        }
+
+        cadeia horarioDisponivel = verificarHorarioDisponivel(agendaMedio)
+
+        se (horarioDisponivel != "")
+        {
+            adicione(servicosAgendadosMedio, servico)
+            escreva("Agendamento concluído para ", servico, " às ", horarioDisponivel, ".\n")
+        }
+        senao
+        {
+            escreva("Não há horários disponíveis para serviço médio.\n")
+        }
+    }
+
+    // Agenda serviço pesado
+    funcao agendarServicoPesado(cadeia servico)
+    {
+        se (tamanho(servicosAgendadosPesado) > 0) entao
+        {
+            escreva("Data bloqueada. Verificar novo dia.\n")
+            retorne
+        }
+
+        se (tamanho(servicosAgendadosMedio) == 0) entao
+        {
+            cadeia horarioDisponivel = verificarHorarioDisponivel(agendaPesado)
+            se (horarioDisponivel != "")
+            {
+                adicione(servicosAgendadosPesado, servico)
+                escreva("Agendamento concluído para ", servico, " às ", horarioDisponivel, ".\n")
+            }
             senao
-                escreva("Data Indisponível para Serviço Médio")
-            
-        caso "Pesado"
-            // Verificar se há serviço médio ou pesado agendado
-            escreva("Verificar serviço pesado agendado")
-            se (temServicoPesadoAgendado = falso) entao
-                se (servicosMediosAgendados = 0) entao
-                    escreva("Agendar Serviço Pesado")
-                    escreva("Agendamento Concluído")
-                    temServicoPesadoAgendado := verdadeiro
-                senao
-                    escreva("Data Indisponível")
-            senao
-                escreva("Data Indisponível")
-        
-        caso contrario
-            escreva("Serviço não reconhecido")
-    
-    // Fim do processo
-    escreva("Fim do Agendamento")
-fimalgoritmo
+            {
+                escreva("Não há horários disponíveis para serviço pesado.\n")
+            }
+        }
+        senao
+        {
+            escreva("Serviços médios já agendados, não é possível agendar serviço pesado.\n")
+        }
+    }
+
+    // Verifica horários disponíveis para cada tipo de serviço
+    funcao verificarHorarioDisponivel(ref cadeia agenda[]) -> cadeia
+    {
+        se (tamanho(agenda) > 0) entao
+        {
+            cadeia horario = agenda[0]
+            remova(agenda, 0)
+            retorne horario
+        }
+        retorne ""
+    }
+}
 
